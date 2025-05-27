@@ -185,11 +185,12 @@ vim.api.nvim_create_autocmd("User", {
     map("n", "<leader>ds", vim.lsp.buf.document_symbol, { desc = "Document Symbols", noremap = true, silent = true })
     map("n", "<leader>ws", vim.lsp.buf.workspace_symbol, { desc = "Workspace Symbols", noremap = true, silent = true })
 
-    -- LLM.nvim
-    map("n", "<leader>ll", ":Llm<CR>", { desc = "Open LLM Chat", noremap = true, silent = true })
-    map("n", "<leader>lc", ":LlmContext<CR>", { desc = "Open LLM Context", noremap = true, silent = true })
-    map("v", "<leader>ll", ":Llm<CR>", { desc = "Open LLM Chat with Selection", noremap = true, silent = true })
-    map("v", "<leader>lc", ":LlmContext<CR>", { desc = "Open LLM Context with Selection", noremap = true, silent = true })
+    -- Ollama
+    local ollama = require("plugins.ollama")
+    map("n", "<leader>ll", function() ollama.invoke_ollama(true) end, { desc = "Ollama Code Generation", noremap = true, silent = true })
+    map("n", "<leader>lh", function() ollama.invoke_ollama(false) end, { desc = "Ollama Help", noremap = true, silent = true })
+    map("v", "<leader>ll", function() ollama.invoke_ollama(true) end, { desc = "Ollama Code Generation with Selection", noremap = true, silent = true })
+    map("v", "<leader>lh", function() ollama.invoke_ollama(false) end, { desc = "Ollama Help with Selection", noremap = true, silent = true })
 
     -- Git
     map("n", "<leader>gg", ":LazyGit<CR>", { desc = "LazyGit", noremap = true, silent = true })
