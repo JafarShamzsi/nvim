@@ -21,7 +21,7 @@ require("core.keymaps")
 require("core.ui")
 
 -- Load plugins
-require("lazy").setup("plugins")
+require("plugins.lazy")
 
 -- Load LSP configuration
 require("lsp").setup()
