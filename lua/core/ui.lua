@@ -132,6 +132,8 @@ local function setup_ui()
   vim.opt.pumheight = 10
   vim.opt.pumwidth = 10
   vim.opt.wildoptions = "pum"
+  
+  -- Valid mouse options
   vim.opt.mouse = "a"
   vim.opt.mousemodel = "extend"
   vim.opt.mousescroll = "ver:1,hor:1"
@@ -139,36 +141,6 @@ local function setup_ui()
   vim.opt.mousehide = true
   vim.opt.mousemoveevent = true
   vim.opt.mousetime = 500
-  vim.opt.mousef = true
-  vim.opt.mouseu = true
-  vim.opt.mousev = true
-  vim.opt.mousei = true
-  vim.opt.mousea = true
-  vim.opt.mouseb = true
-  vim.opt.mousec = true
-  vim.opt.moused = true
-  vim.opt.mousee = true
-  vim.opt.mousef = true
-  vim.opt.mouseg = true
-  vim.opt.mouseh = true
-  vim.opt.mousei = true
-  vim.opt.mousej = true
-  vim.opt.mousek = true
-  vim.opt.mousel = true
-  vim.opt.mousem = true
-  vim.opt.mousen = true
-  vim.opt.mouseo = true
-  vim.opt.mousep = true
-  vim.opt.mouseq = true
-  vim.opt.mouser = true
-  vim.opt.mouses = true
-  vim.opt.mouset = true
-  vim.opt.mouseu = true
-  vim.opt.mousev = true
-  vim.opt.mousew = true
-  vim.opt.mousex = true
-  vim.opt.mousey = true
-  vim.opt.mousez = true
 end
 
 -- Call setup
