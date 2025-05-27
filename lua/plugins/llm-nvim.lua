@@ -1,5 +1,5 @@
 return {
-  "David-Kunz/llm.nvim",
+  "/Kurama622/llm.nvim",
   dependencies = {
     "nvim-lua/plenary.nvim",
     "nvim-telescope/telescope.nvim",

@@ -29,162 +29,275 @@ vim.api.nvim_create_autocmd("ColorScheme", {
 
 
 require("lazy").setup {
-  { "rose-pine/neovim",       name = "rose-pine" },
-  { "nvim-tree/nvim-tree.lua" },
-  {
-    "nvim-telescope/telescope.nvim",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      { "nvim-telescope/telescope-fzf-native.nvim", build = "make" }
-    },
-    config = function()
-      local telescope = require("telescope")
-
-      telescope.load_extension("fzf")
-
-      telescope.setup({
-        defaults = {
-          file_ignore_patterns = {
-            "venv/", "node_modules/", "build/", "dist/", "%.lock", "%.git/", "__pycache__/",
-            "%.svg", "%.png", "%.jpg", "%.jpeg", "%.ico"
-          },
-          vimgrep_arguments = {
-            "rg",
-            "--color=never",
-            "--no-heading",
-            "--with-filename",
-            "--line-number",
-            "--column",
-            "--smart-case",
-            "--hidden",
-            "--glob", "!.git/",
-            "--glob", "!venv/",
-            "--glob", "!node_modules/",
-            "--glob", "!build/"
-          },
-        },
-        pickers = {
-          live_grep = {
-            -- Use files-with-matches to only show each file once
-            additional_args = function()
-              return { "--files-with-matches" }
-            end
-          }
+  { "folke/lazy.nvim", lazy = true },
+  { "folke/tokyonight.nvim", name = "tokyonight", priority = 1000, lazy = false, opts = { style = "storm", transparent = true }, config = function()
+    require("tokyonight").setup({ style = "storm", transparent = true })
+    vim.cmd.colorscheme("tokyonight")
+  end },
+  { "neovim/nvim-lspconfig", dependencies = {
+    "hrsh7th/cmp-nvim-lsp",
+    "williamboman/mason.nvim",
+    "williamboman/mason-lspconfig.nvim",
+    "neovim/nvim-lspconfig"
+  } },
+  { "williamboman/mason.nvim", config = function()
+    require("mason").setup({
+      ui = {
+        border = "rounded",
+        icons = {
+          package_installed = "✓",
+          package_pending = "➜",
+          package_uninstalled = "✗"
         }
-      })
-
-      -- Create a custom command for files with matches
-      local builtin = require('telescope.builtin')
-      vim.api.nvim_create_user_command('TelescopeFilesWithMatches', function(opts)
-        builtin.live_grep({
-          additional_args = { "--files-with-matches" }
-        })
-      end, {})
-    end
-  }
-  , { "nvim-lualine/lualine.nvim" },
-  { "nvim-tree/nvim-web-devicons" },
-  { "goolord/alpha-nvim" },
-  { "folke/which-key.nvim" },
-  -- for the doggo
-  { "edluffy/hologram.nvim" },
-  -- 🧠 LSP Setup
-  { "neovim/nvim-lspconfig" },
-  { "williamboman/mason.nvim" },
-  { "williamboman/mason-lspconfig.nvim" },
-  -- 🧘 Zen & Twilight
-  { "folke/zen-mode.nvim" },
-  { "folke/twilight.nvim" },
-
-  -- 📘 Git Gutter
-  { "lewis6991/gitsigns.nvim" },
-
-  -- 🐾 Terminal Pets
-  {
-    "giusgad/pets.nvim",
-    dependencies = { "MunifTanjim/nui.nvim" },
-  },
-
-  -- avante
-  {
-    "yetone/avante.nvim",
-    lazy = false,
-    version = false,
-    build = "make",
-    priority = 1000,
-    opts = {
-      provider = "openai",
-      openai = {
-        endpoint = "https://api.openai.com/v1",
-        model = "gpt-4o",
-        timeout = 30000,
-        temperature = 0,
-        max_completion_tokens = 8192,
       },
-    },
-    dependencies = {
-      "nvim-treesitter/nvim-treesitter",
-      "stevearc/dressing.nvim",
-      "nvim-lua/plenary.nvim",
-      "MunifTanjim/nui.nvim",
-      "hrsh7th/nvim-cmp",
-      "nvim-tree/nvim-web-devicons",
-      "nvim-telescope/telescope.nvim",
-      {
-        "HakonHarnes/img-clip.nvim",
-        event = "VeryLazy",
-        opts = {
-          default = {
-            embed_image_as_base64 = false,
-            prompt_for_file_name = false,
-            drag_and_drop = { insert_mode = true },
-            use_absolute_path = true,
-          },
+      ensure_installed = {
+        -- LSP servers
+        "typescript-language-server",
+        "pyright",
+        "gopls",
+        "haskell-language-server",
+        "rust-analyzer",
+        "clangd",
+        "lua-language-server",
+        
+        -- Formatters
+        "stylua",
+        "prettier",
+        "black",
+        "isort",
+        "gofumpt",
+        "goimports",
+        "fourmolu",
+        "rustfmt",
+        "clang-format",
+        "cmake-format",
+        "uncrustify",
+        
+        -- Linters
+        "eslint",
+        "flake8",
+        "golangci-lint",
+        "hlint",
+        "clang-tidy",
+        "cmake-lint",
+        
+        -- Code actions
+        "shellcheck"
+      }
+    })
+  end },
+  { "williamboman/mason-lspconfig.nvim", config = function()
+    require("mason-lspconfig").setup({
+      ensure_installed = {
+        "typescript_language_server",
+        "pyright",
+        "gopls",
+        "hls",
+        "rust_analyzer",
+        "clangd",
+        "lua_ls"
+      },
+      automatic_installation = true
+    })
+  end },
+  { "hrsh7th/nvim-cmp", dependencies = {
+    "hrsh7th/cmp-nvim-lsp",
+    "hrsh7th/cmp-buffer",
+    "hrsh7th/cmp-path",
+    "hrsh7th/cmp-cmdline",
+    "L3MON4D3/LuaSnip",
+    "saadparwaiz1/cmp_luasnip",
+    "rafamadriz/friendly-snippets"
+  }, config = function()
+    local cmp = require("cmp")
+    local luasnip = require("luasnip")
+    require("luasnip.loaders.from_vscode").lazy_load()
+
+    cmp.setup({
+      snippet = {
+        expand = function(args)
+          luasnip.lsp_expand(args.body)
+        end,
+      },
+      mapping = cmp.mapping.preset.insert({
+        ["<C-b>"] = cmp.mapping.scroll_docs(-4),
+        ["<C-f>"] = cmp.mapping.scroll_docs(4),
+        ["<C-Space>"] = cmp.mapping.complete(),
+        ["<C-e>"] = cmp.mapping.abort(),
+        ["<CR>"] = cmp.mapping.confirm({ select = true }),
+        ["<Tab>"] = cmp.mapping(function(fallback)
+          if cmp.visible() then
+            cmp.select_next_item()
+          elseif luasnip.expand_or_jumpable() then
+            luasnip.expand_or_jump()
+          else
+            fallback()
+          end
+        end, { "i", "s" }),
+        ["<S-Tab>"] = cmp.mapping(function(fallback)
+          if cmp.visible() then
+            cmp.select_prev_item()
+          elseif luasnip.jumpable(-1) then
+            luasnip.jump(-1)
+          else
+            fallback()
+          end
+        end, { "i", "s" }),
+      }),
+      sources = cmp.config.sources({
+        { name = "nvim_lsp" },
+        { name = "luasnip" },
+        { name = "buffer" },
+        { name = "path" },
+      }),
+    })
+
+    -- Set configuration for specific filetype
+    cmp.setup.filetype("gitcommit", {
+      sources = cmp.config.sources({
+        { name = "git" },
+        { name = "buffer" },
+      }),
+    })
+
+    -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore)
+    cmp.setup.cmdline({ "/", "?" }, {
+      mapping = cmp.mapping.preset.cmdline(),
+      sources = {
+        { name = "buffer" },
+      },
+    })
+
+    -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore)
+    cmp.setup.cmdline(":", {
+      mapping = cmp.mapping.preset.cmdline(),
+      sources = cmp.config.sources({
+        { name = "path" },
+        { name = "cmdline" },
+      }),
+    })
+  end },
+  { "goolord/alpha-nvim", dependencies = { "nvim-tree/nvim-web-devicons" }, config = function()
+    local alpha = require("alpha")
+    local dashboard = require("alpha.themes.dashboard")
+
+    dashboard.section.header.val = {
+      "⠀⠀⠀⠀⠀⠀⢀⣀⣀⣀⣀⣀⡀⠀⠀⠀⠀⠀⠀",
+      "⠀⠀⠀⠀⣠⡾⠛⠉⠙⠛⠉⠙⠻⣦⡀⠀⠀⠀⠀",
+      "⠀⠀⠀⣼⡏⠀⠀⢀⣀⠀⠀⠀⠀⠈⣿⡆⠀⠀⠀",
+      "⠀⠀⠀⣿⡇⠀⢰⡿⠿⠿⣷⡄⠀⠀⢸⣿⠀⠀⠀",
+      "⠀⠀⠀⣿⡇⠀⢸⡇⠀⠀⢸⡇⠀⠀⢸⣿⠀⠀⠀",
+      "⠀⠀⠀⠹⣧⡀⠀⠻⣶⣶⡿⠃⠀⢀⣼⠏⠀⠀⠀",
+      "⠀⠀⠀⠀⠈⠛⠷⣤⣤⣤⣤⠶⠛⠋⠁⠀⠀⠀⠀",
+      "",
+      "  the eye of truth type shi",
+    }
+
+    dashboard.section.buttons.val = {
+      dashboard.button("f", "🔍 Find File", ":Telescope find_files<CR>"),
+      dashboard.button("r", "🕰️  Recent Files", ":Telescope oldfiles<CR>"),
+      dashboard.button("e", "📂 Explorer", ":NvimTreeToggle<CR>"),
+      dashboard.button("c", "⚙️  Config", ":e ~/.config/nvim/init.lua<CR>"),
+      dashboard.button("q", "🛑 Quit", ":qa<CR>"),
+    }
+
+    dashboard.section.footer.val = {
+      "",
+      "\"Hokage Dattebayo\"",
+      " — Naruto",
+    }
+
+    dashboard.opts.opts.noautocmd = true
+    alpha.setup(dashboard.opts)
+  end },
+  { "nvim-lualine/lualine.nvim", dependencies = { "nvim-tree/nvim-web-devicons" }, config = function()
+    require("lualine").setup({
+      options = {
+        theme = "rose-pine",
+        section_separators = "",
+        component_separators = "",
+      },
+    })
+  end },
+  { "nvim-tree/nvim-tree.lua" },
+  { "folke/zen-mode.nvim", config = function()
+    require("zen-mode").setup({
+      window = {
+        width = 80,
+        options = {
+          number = false,
+          relativenumber = false,
         },
       },
-      {
-        "MeanderingProgrammer/render-markdown.nvim",
-        opts = { file_types = { "markdown", "Avante" } },
-        ft = { "markdown", "Avante" },
+      plugins = {
+        twilight = { enabled = true },
       },
-    },
-  },
-  -- code companion
-  {
-    "olimorris/codecompanion.nvim",
-    lazy = false,
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "nvim-treesitter/nvim-treesitter",
-    },
-    opts = {
-      strategies = {
-        inline = { adapter = "anthropic" },
-        chat = { adapter = "anthropic" },
+    })
+  end },
+  { "folke/twilight.nvim", config = function()
+    require("twilight").setup({})
+  end },
+  { "lewis6991/gitsigns.nvim", config = function()
+    require("gitsigns").setup()
+  end },
+  { "giusgad/pets.nvim", dependencies = { "MunifTanjim/nui.nvim" }, config = function()
+    require("pets").setup({
+      row = 2,
+      col = 2,
+      speed = 25,
+      default_pet = "dog",
+      default_style = "brown",
+    })
+  end },
+  { "Kurama622/llm.nvim", dependencies = { "nvim-lua/plenary.nvim", "MunifTanjim/nui.nvim" }, config = function()
+    require("llm").setup({
+      backend = "openai",
+      openai = {
+        api_key = os.getenv("OPENAI_API_KEY"),
+        base_url = "https://api.openai.com/v1",
+        chat_completions_url = "/chat/completions"
       },
-      anthropic = {
-        api_key = os.getenv("ANTHROPIC_API_KEY"),
-        model = "claude-3-7-sonnet-20241022",
+      model = "gpt-4",
+      ui = {
+        floating = true,
+        position = "center",
+        width = 0.8,
+        height = 0.8,
+        border = "rounded",
+        title = "LLM Chat",
+        title_pos = "center",
       },
-      suggestion = {
-        enabled = true,
-        auto_trigger = true,
-        debounce = 75,
-        accept_keymap = "<C-l>", -- Accept suggestion with Ctrl+L
+      chat = {
+        markdown = true,
+        syntax = true,
+        wrap = true,
+        number = false,
+        relativenumber = false,
+        cursorline = true,
+        signcolumn = "no",
+        foldcolumn = "0",
+        list = false,
+        spell = false,
+        wrap = true,
+        linebreak = true,
+        showbreak = "↪ ",
       },
-      log_level = "DEBUG",
-    },
-    config = function(_, opts)
-      require("codecompanion").setup(opts)
-      vim.notify("🧠 Claude 3.7 online. This crap works", vim.log.levels.INFO)
-      -- Claude Token Tracker 💸
-      vim.api.nvim_create_autocmd("User", {
-        pattern = "CodeCompanionTokensUsed",
-        callback = function(args)
-          local tokens = args.data and args.data.tokens or 0
-          vim.notify("🧾 Claude used " .. tokens .. " tokens in that suggestion", vim.log.levels.INFO)
-        end,
-      })
-    end,
-  }
+      context = {
+        markdown = true,
+        syntax = true,
+        wrap = true,
+        number = true,
+        relativenumber = true,
+        cursorline = true,
+        signcolumn = "yes",
+        foldcolumn = "1",
+        list = true,
+        spell = false,
+        wrap = true,
+        linebreak = true,
+        showbreak = "↪ ",
+      },
+    })
+  end },
+  { "olimorris/codecompanion.nvim", lazy = false, dependencies = { "nvim-lua/plenary.nvim", "nvim-treesitter/nvim-treesitter" }, opts = { strategies = { inline = { adapter = "anthropic" }, chat = { adapter = "anthropic" } }, anthropic = { api_key = os.getenv("ANTHROPIC_API_KEY"), model = "claude-3-7-sonnet-20241022" }, suggestion = { enabled = true, auto_trigger = true, debounce = 75, accept_keymap = "<C-l>" }, log_level = "DEBUG" }, config = function(_, opts) require("codecompanion").setup(opts) vim.notify("🧠 Claude 3.7 online. This crap works", vim.log.levels.INFO) vim.api.nvim_create_autocmd("User", { pattern = "CodeCompanionTokensUsed", callback = function(args) local tokens = args.data and args.data.tokens or 0 vim.notify("🧾 Claude used " .. tokens .. " tokens in that suggestion", vim.log.levels.INFO) end }) end }
 }
