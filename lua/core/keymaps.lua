@@ -4,6 +4,149 @@ vim.api.nvim_create_autocmd("User", {
     local map = vim.keymap.set
     local opts = { noremap = true, silent = true }
 
+    -- Function to create and display keybind cheatsheet
+    local function show_keybind_cheatsheet()
+      local keymaps = {
+        { "Window Navigation", {
+          { "<C-h>", "Go to left window" },
+          { "<C-j>", "Go to lower window" },
+          { "<C-k>", "Go to upper window" },
+          { "<C-l>", "Go to right window" },
+          { "<C-Up>", "Resize window up" },
+          { "<C-Down>", "Resize window down" },
+          { "<C-Left>", "Resize window left" },
+          { "<C-Right>", "Resize window right" },
+        }},
+        { "Buffer Navigation", {
+          { "<S-h>", "Previous buffer" },
+          { "<S-l>", "Next buffer" },
+          { "<leader>bd", "Delete buffer" },
+        }},
+        { "Telescope", {
+          { "<leader>ff", "Find Files" },
+          { "<leader>fg", "Live Grep" },
+          { "<leader>fb", "Find Buffers" },
+          { "<leader>fh", "Help Tags" },
+          { "<leader>fr", "Recent Files" },
+        }},
+        { "File Explorer", {
+          { "<leader>e", "Toggle File Explorer" },
+          { "<leader>o", "Focus File Explorer" },
+        }},
+        { "LSP", {
+          { "gd", "Go to Definition" },
+          { "gr", "Go to References" },
+          { "K", "Hover Documentation" },
+          { "<leader>ca", "Code Action" },
+          { "<leader>rn", "Rename Symbol" },
+          { "<leader>D", "Type Definition" },
+          { "<leader>ds", "Document Symbols" },
+          { "<leader>ws", "Workspace Symbols" },
+        }},
+        { "AI Assistant", {
+          { "<leader>ll", "Open LLM Chat" },
+          { "<leader>lc", "Open LLM Context" },
+          { "<leader>ll (visual)", "Open LLM Chat with Selection" },
+          { "<leader>lc (visual)", "Open LLM Context with Selection" },
+        }},
+        { "Git", {
+          { "<leader>gg", "LazyGit" },
+          { "<leader>gb", "Toggle Git Blame" },
+        }},
+        { "Terminal", {
+          { "<leader>tt", "Toggle Terminal" },
+          { "<Esc> (in terminal)", "Exit Terminal Mode" },
+        }},
+        { "Quickfix", {
+          { "<leader>co", "Open Quickfix" },
+          { "<leader>cc", "Close Quickfix" },
+          { "<leader>cn", "Next Quickfix Item" },
+          { "<leader>cp", "Previous Quickfix Item" },
+        }},
+        { "Misc", {
+          { "<leader>w", "Save File" },
+          { "<leader>q", "Quit" },
+          { "<leader>h", "Clear Search Highlight" },
+          { "<leader>u", "Toggle Undo Tree" },
+        }},
+      }
+
+      -- Create a new buffer
+      local buf = vim.api.nvim_create_buf(false, true)
+      local width = vim.api.nvim_get_option("columns")
+      local height = vim.api.nvim_get_option("lines")
+      local win_height = math.ceil(height * 0.8)
+      local win_width = math.ceil(width * 0.8)
+      local row = math.ceil((height - win_height) / 2)
+      local col = math.ceil((width - win_width) / 2)
+
+      -- Create the window
+      local win = vim.api.nvim_open_win(buf, true, {
+        relative = "editor",
+        row = row,
+        col = col,
+        width = win_width,
+        height = win_height,
+        style = "minimal",
+        border = "rounded",
+        title = " Keybind Cheatsheet ",
+        title_pos = "center",
+      })
+
+      -- Set buffer options
+      vim.api.nvim_buf_set_option(buf, "modifiable", true)
+      vim.api.nvim_buf_set_option(buf, "buftype", "nofile")
+      vim.api.nvim_buf_set_option(buf, "swapfile", false)
+      vim.api.nvim_buf_set_option(buf, "bufhidden", "wipe")
+      vim.api.nvim_buf_set_option(buf, "filetype", "markdown")
+
+      -- Add content
+      local lines = {}
+      for _, section in ipairs(keymaps) do
+        table.insert(lines, string.format("# %s", section[1]))
+        table.insert(lines, "")
+        for _, keymap in ipairs(section[2]) do
+          table.insert(lines, string.format("`%s` - %s", keymap[1], keymap[2]))
+        end
+        table.insert(lines, "")
+      end
+
+      vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+
+      -- Set buffer options after content
+      vim.api.nvim_buf_set_option(buf, "modifiable", false)
+      vim.api.nvim_buf_set_option(buf, "modified", false)
+      vim.api.nvim_buf_set_option(buf, "readonly", true)
+      vim.api.nvim_buf_set_option(buf, "wrap", true)
+      vim.api.nvim_buf_set_option(buf, "linebreak", true)
+      vim.api.nvim_buf_set_option(buf, "number", false)
+      vim.api.nvim_buf_set_option(buf, "relativenumber", false)
+      vim.api.nvim_buf_set_option(buf, "cursorline", true)
+      vim.api.nvim_buf_set_option(buf, "signcolumn", "no")
+      vim.api.nvim_buf_set_option(buf, "foldcolumn", "0")
+      vim.api.nvim_buf_set_option(buf, "list", false)
+      vim.api.nvim_buf_set_option(buf, "spell", false)
+
+      -- Set window options
+      vim.api.nvim_win_set_option(win, "wrap", true)
+      vim.api.nvim_win_set_option(win, "linebreak", true)
+      vim.api.nvim_win_set_option(win, "number", false)
+      vim.api.nvim_win_set_option(win, "relativenumber", false)
+      vim.api.nvim_win_set_option(win, "cursorline", true)
+      vim.api.nvim_win_set_option(win, "signcolumn", "no")
+      vim.api.nvim_win_set_option(win, "foldcolumn", "0")
+      vim.api.nvim_win_set_option(win, "list", false)
+      vim.api.nvim_win_set_option(win, "spell", false)
+
+      -- Add keybind to close the window
+      vim.keymap.set("n", "q", function()
+        vim.api.nvim_win_close(win, true)
+      end, { buffer = buf, noremap = true, silent = true })
+    end
+
+    -- Add keybind to show cheatsheet
+    map("n", "<leader>?", show_keybind_cheatsheet, { desc = "Show Keybind Cheatsheet", noremap = true, silent = true })
+
     -- Better window navigation
     map("n", "<C-h>", "<C-w>h", { desc = "Go to left window", noremap = true, silent = true })
     map("n", "<C-j>", "<C-w>j", { desc = "Go to lower window", noremap = true, silent = true })
