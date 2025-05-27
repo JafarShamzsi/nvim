@@ -1,7 +1,10 @@
 -- UI Customization
 local function setup_ui()
   -- Set colorscheme
-  vim.cmd.colorscheme("rose-pine")
+  local ok = pcall(vim.cmd.colorscheme, "rose-pine")
+  if not ok then
+    vim.notify("rose-pine colorscheme not found!", vim.log.levels.WARN)
+  end
 
   -- Custom highlight groups
   local highlights = {

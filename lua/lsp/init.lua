@@ -346,7 +346,7 @@ local function setup_lsp_handlers()
 
   -- Show diagnostics in hover window
   vim.api.nvim_create_autocmd("CursorHold", {
-    callback = function()
+  callback = function()
       local opts = {
         focusable = false,
         close_events = { "BufLeave", "CursorMoved", "InsertEnter", "FocusLost" },
@@ -356,8 +356,8 @@ local function setup_lsp_handlers()
         scope = "cursor",
       }
       vim.diagnostic.open_float(nil, opts)
-    end,
-  })
+  end,
+})
 
   -- LSP handlers
   vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
