@@ -40,6 +40,7 @@ require("lazy").setup {
     "williamboman/mason-lspconfig.nvim",
     "neovim/nvim-lspconfig"
   } },
+  { "jose-elias-alvarez/null-ls.nvim", dependencies = { "nvim-lua/plenary.nvim" } },
   { "williamboman/mason.nvim", config = function()
     require("mason").setup({
       ui = {
@@ -89,7 +90,7 @@ require("lazy").setup {
   { "williamboman/mason-lspconfig.nvim", config = function()
     require("mason-lspconfig").setup({
       ensure_installed = {
-        "typescript_language_server",
+        "tsserver",
         "pyright",
         "gopls",
         "hls",
@@ -160,7 +161,7 @@ require("lazy").setup {
       }),
     })
 
-    -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore)
+    -- Use buffer source for `/` and `?`
     cmp.setup.cmdline({ "/", "?" }, {
       mapping = cmp.mapping.preset.cmdline(),
       sources = {
@@ -168,7 +169,7 @@ require("lazy").setup {
       },
     })
 
-    -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore)
+    -- Use cmdline & path source for ':'
     cmp.setup.cmdline(":", {
       mapping = cmp.mapping.preset.cmdline(),
       sources = cmp.config.sources({
@@ -213,7 +214,7 @@ require("lazy").setup {
   { "nvim-lualine/lualine.nvim", dependencies = { "nvim-tree/nvim-web-devicons" }, config = function()
     require("lualine").setup({
       options = {
-        theme = "rose-pine",
+        theme = "tokyonight",
         section_separators = "",
         component_separators = "",
       },
