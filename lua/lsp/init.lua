@@ -3,7 +3,7 @@ local M = {}
 -- LSP servers to install
 local servers = {
   -- TypeScript/JavaScript
-  tsserver = {
+  ts_ls = {
     settings = {
       typescript = {
         inlayHints = {
