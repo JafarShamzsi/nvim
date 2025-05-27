@@ -1,9 +1,9 @@
 -- UI Customization
 local function setup_ui()
   -- Set colorscheme
-  local ok = pcall(vim.cmd.colorscheme, "rose-pine")
+  local ok = pcall(vim.cmd.colorscheme, "tokyonight")
   if not ok then
-    vim.notify("rose-pine colorscheme not found!", vim.log.levels.WARN)
+    vim.notify("tokyonight colorscheme not found!", vim.log.levels.WARN)
   end
 
   -- Custom highlight groups
