@@ -34,6 +34,18 @@ require("lazy").setup {
     require("tokyonight").setup({ style = "storm", transparent = true })
     vim.cmd.colorscheme("tokyonight")
   end },
+  { "nvim-telescope/telescope.nvim", dependencies = { "nvim-lua/plenary.nvim" }, config = function()
+    require("telescope").setup({
+      defaults = {
+        mappings = {
+          i = {
+            ["<C-j>"] = "move_selection_next",
+            ["<C-k>"] = "move_selection_previous",
+          },
+        },
+      },
+    })
+  end },
   { "neovim/nvim-lspconfig", dependencies = {
     "hrsh7th/cmp-nvim-lsp",
     "williamboman/mason.nvim",
@@ -90,7 +102,7 @@ require("lazy").setup {
   { "williamboman/mason-lspconfig.nvim", config = function()
     require("mason-lspconfig").setup({
       ensure_installed = {
-        "tsserver",
+        "ts_ls",
         "pyright",
         "gopls",
         "hls",
@@ -220,7 +232,19 @@ require("lazy").setup {
       },
     })
   end },
-  { "nvim-tree/nvim-tree.lua" },
+  { "nvim-tree/nvim-tree.lua", config = function()
+    require("nvim-tree").setup({
+      view = {
+        width = 30,
+      },
+      renderer = {
+        group_empty = true,
+      },
+      filters = {
+        dotfiles = false,
+      },
+    })
+  end },
   { "folke/zen-mode.nvim", config = function()
     require("zen-mode").setup({
       window = {
@@ -250,55 +274,12 @@ require("lazy").setup {
       default_style = "brown",
     })
   end },
-  { "Kurama622/llm.nvim", dependencies = { "nvim-lua/plenary.nvim", "MunifTanjim/nui.nvim" }, config = function()
-    require("llm").setup({
-      backend = "openai",
-      openai = {
-        api_key = os.getenv("OPENAI_API_KEY"),
-        base_url = "https://api.openai.com/v1",
-        chat_completions_url = "/chat/completions"
-      },
-      model = "gpt-4",
-      ui = {
-        floating = true,
-        position = "center",
-        width = 0.8,
-        height = 0.8,
-        border = "rounded",
-        title = "LLM Chat",
-        title_pos = "center",
-      },
-      chat = {
-        markdown = true,
-        syntax = true,
-        wrap = true,
-        number = false,
-        relativenumber = false,
-        cursorline = true,
-        signcolumn = "no",
-        foldcolumn = "0",
-        list = false,
-        spell = false,
-        wrap = true,
-        linebreak = true,
-        showbreak = "↪ ",
-      },
-      context = {
-        markdown = true,
-        syntax = true,
-        wrap = true,
-        number = true,
-        relativenumber = true,
-        cursorline = true,
-        signcolumn = "yes",
-        foldcolumn = "1",
-        list = true,
-        spell = false,
-        wrap = true,
-        linebreak = true,
-        showbreak = "↪ ",
-      },
-    })
-  end },
+  { "yacineMTB/dingllm.nvim", 
+    lazy = false,
+    dependencies = { "nvim-lua/plenary.nvim" },
+    config = function()
+      -- No setup needed, the plugin is ready to use
+    end
+  },
   { "olimorris/codecompanion.nvim", lazy = false, dependencies = { "nvim-lua/plenary.nvim", "nvim-treesitter/nvim-treesitter" }, opts = { strategies = { inline = { adapter = "anthropic" }, chat = { adapter = "anthropic" } }, anthropic = { api_key = os.getenv("ANTHROPIC_API_KEY"), model = "claude-3-7-sonnet-20241022" }, suggestion = { enabled = true, auto_trigger = true, debounce = 75, accept_keymap = "<C-l>" }, log_level = "DEBUG" }, config = function(_, opts) require("codecompanion").setup(opts) vim.notify("🧠 Claude 3.7 online. This crap works", vim.log.levels.INFO) vim.api.nvim_create_autocmd("User", { pattern = "CodeCompanionTokensUsed", callback = function(args) local tokens = args.data and args.data.tokens or 0 vim.notify("🧾 Claude used " .. tokens .. " tokens in that suggestion", vim.log.levels.INFO) end }) end }
 }
