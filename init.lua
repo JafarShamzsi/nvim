@@ -1,6 +1,7 @@
 require "core"
 require "plugins"
 require "lsp"
+require "core.ui"
 
 vim.env.PATH = vim.env.PATH .. ':/opt/homebrew/bin:/usr/local/bin'
 -- Music player using mpv
