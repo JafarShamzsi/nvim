@@ -1,11 +1,18 @@
-require "core"
-require "plugins"
-require "lsp"
-require "core.ui"
-
+-- Set PATH
 vim.env.PATH = vim.env.PATH .. ':/opt/homebrew/bin:/usr/local/bin'
+
+-- Load core configurations
+require("core.options")
+require("core.keymaps")
+require("core.ui")
+
+-- Load plugins
+require("lazy").setup("plugins")
+
+-- Load LSP configuration
+require("lsp").setup()
+
 -- Music player using mpv
--- Music player using mpv (simplified, stable)
 local function play_music(track)
   -- Kill any existing mpv (ignore errors)
   vim.fn.system("pkill -f mpv")
@@ -20,7 +27,6 @@ local function play_music(track)
     vim.notify("🎶 Now playing: " .. full_path)
   end
 end
-
 
 -- 🎧 Lofi
 vim.api.nvim_create_user_command("PlayLofi", function()
@@ -46,21 +52,18 @@ vim.api.nvim_create_user_command("StopMusic", function()
   vim.fn.system("pkill mpv")
 end, {})
 
-
---- auto stop the damn music after we quit nvim
+-- Auto stop music when quitting nvim
 vim.api.nvim_create_autocmd("VimLeavePre", {
   callback = function()
     vim.fn.system("pkill mpv")
   end,
 })
 
---- doggo
+-- Pet commands
 vim.api.nvim_create_user_command("Doggo", function()
   vim.cmd("PetsNew dog")
 end, {})
 
-
--- Summon the pet squad
 vim.api.nvim_create_user_command("Catto", function()
   vim.cmd("PetsNew cat")
 end, {})
@@ -72,7 +75,7 @@ end, {})
 vim.api.nvim_create_user_command("Frogchamp", function()
   vim.cmd("PetsNew frog")
 end, {})
--- evict the pets
+
 vim.api.nvim_create_user_command("RMPets", function()
   vim.cmd("PetsKillAll")
 end, {})
