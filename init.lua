@@ -23,8 +23,30 @@ require("core.ui")
 -- Load plugins
 require("plugins.lazy")
 
--- Load LSP configuration
-require("lsp").setup()
+-- Wait for plugins to load
+vim.api.nvim_create_autocmd("User", {
+  pattern = "VeryLazy",
+  callback = function()
+    -- Setup LSP
+    require("lsp").setup()
+
+    -- Verify plugins are loaded
+    local required_plugins = {
+      "nvim-tree",
+      "telescope",
+      "lualine",
+      "gitsigns",
+      "dingllm",
+      "codecompanion"
+    }
+
+    for _, plugin in ipairs(required_plugins) do
+      if not pcall(require, plugin) then
+        vim.notify("Plugin " .. plugin .. " failed to load!", vim.log.levels.ERROR)
+      end
+    end
+  end,
+})
 
 -- Music player using mpv
 local function play_music(track)
