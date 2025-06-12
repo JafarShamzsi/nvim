@@ -52,7 +52,7 @@ require("lazy").setup {
     "williamboman/mason-lspconfig.nvim",
     "neovim/nvim-lspconfig"
   } },
-  { "jose-elias-alvarez/null-ls.nvim", dependencies = { "nvim-lua/plenary.nvim" } },
+  { "nvimtools/none-ls.nvim", dependencies = { "nvim-lua/plenary.nvim" } },
   { "williamboman/mason.nvim", config = function()
     require("mason").setup({
       ui = {

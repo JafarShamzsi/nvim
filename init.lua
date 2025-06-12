@@ -27,8 +27,16 @@ require("plugins.lazy")
 vim.api.nvim_create_autocmd("User", {
   pattern = "VeryLazy",
   callback = function()
-    -- Setup LSP
-    require("lsp").setup()
+    -- Ensure LSP is set up with proper error handling
+    local ok, err = pcall(function()
+      require("lsp").setup()
+    end)
+    
+    if not ok then
+      vim.notify("LSP setup failed: " .. tostring(err), vim.log.levels.ERROR)
+    else
+      vim.notify("LSP setup completed successfully", vim.log.levels.INFO)
+    end
 
     -- Verify plugins are loaded
     local required_plugins = {
