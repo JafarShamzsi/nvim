@@ -281,5 +281,20 @@ require("lazy").setup {
       -- No setup needed, the plugin is ready to use
     end
   },
-  { "olimorris/codecompanion.nvim", lazy = false, dependencies = { "nvim-lua/plenary.nvim", "nvim-treesitter/nvim-treesitter" }, opts = { strategies = { inline = { adapter = "anthropic" }, chat = { adapter = "anthropic" } }, anthropic = { api_key = os.getenv("ANTHROPIC_API_KEY"), model = "claude-3-7-sonnet-20241022" }, suggestion = { enabled = true, auto_trigger = true, debounce = 75, accept_keymap = "<C-l>" }, log_level = "DEBUG" }, config = function(_, opts) require("codecompanion").setup(opts) vim.notify("🧠 Claude 3.7 online. This crap works", vim.log.levels.INFO) vim.api.nvim_create_autocmd("User", { pattern = "CodeCompanionTokensUsed", callback = function(args) local tokens = args.data and args.data.tokens or 0 vim.notify("🧾 Claude used " .. tokens .. " tokens in that suggestion", vim.log.levels.INFO) end }) end }
+  { "olimorris/codecompanion.nvim", lazy = false, dependencies = { "nvim-lua/plenary.nvim", "nvim-treesitter/nvim-treesitter" }, opts = { strategies = { inline = { adapter = "anthropic" }, chat = { adapter = "anthropic" } }, anthropic = { api_key = os.getenv("ANTHROPIC_API_KEY"), model = "claude-3-7-sonnet-20241022" }, suggestion = { enabled = true, auto_trigger = true, debounce = 75, accept_keymap = "<C-l>" }, log_level = "DEBUG" }, config = function(_, opts) require("codecompanion").setup(opts) vim.notify("🧠 Claude 3.7 online. This crap works", vim.log.levels.INFO) vim.api.nvim_create_autocmd("User", { pattern = "CodeCompanionTokensUsed", callback = function(args) local tokens = args.data and args.data.tokens or 0 vim.notify("🧾 Claude used " .. tokens .. " tokens in that suggestion", vim.log.levels.INFO) end }) end },
+  {
+    "supermaven-inc/supermaven-nvim",
+    config = function()
+      require("supermaven-nvim").setup({
+        keymaps = {
+          accept_suggestion = "<Tab>",
+          clear_suggestion = "<C-]>",
+          accept_word = "<C-j>",
+        },
+        log_level = "info",
+        disable_inline_completion = false,
+        disable_keymaps = false,
+      })
+    end,
+  },
 }
