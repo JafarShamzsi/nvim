@@ -25,6 +25,29 @@ Copy-Item "$HOME\nvim-backup\nvim" "$HOME\.config\nvim" -Recurse
 nvim
 ```
 
+
+## Install on Linux
+
+1. Install Neovim 0.10 or newer, Git, and a Nerd Font through your distribution's package manager.
+2. Clone this repository:
+
+```bash
+git clone git@github.com:JafarShamzsi/nvim.git ~/nvim-backup
+```
+
+3. Back up any existing Neovim configuration, then install this one:
+
+```bash
+[ -d ~/.config/nvim ] && mv ~/.config/nvim ~/.config/nvim.backup-$(date +%Y%m%d-%H%M%S)
+mkdir -p ~/.config
+cp -R ~/nvim-backup/nvim ~/.config/nvim
+```
+
+4. Start Neovim and allow Lazy.nvim to install plugins:
+
+```bash
+nvim
+```
 ## Included
 
 - Official Doom Nvim dashboard banner and Doom One palette
@@ -48,3 +71,4 @@ cd "$HOME\nvim-backup"
 git pull
 Copy-Item .\nvim "$HOME\.config\nvim" -Recurse -Force
 ```
+
