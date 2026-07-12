@@ -1,63 +1,50 @@
-Welcome to the most cursed Neovim config you'll ever see.  
+# Neovim Setup Backup
 
-## ✨ Features
+Portable backup of the current Doom One-inspired Neovim configuration.
 
-- 🎧 Play lofi, nightcore, or... *research-oriented* sounds via `mpv`
-- 🧘 Zen Mode + Twilight for distraction-free focus
-- 🐶 Terminal pets with `:Doggo`, `:Catto`, `:Bunbun`, and `:Frogchamp`
-- ⚡ Instant Claude 3.7 code suggestions (via CodeCompanion + blink.cmp)
-- 🌈 Rose Pine theme, aesthetic splash screen, and lualine
-- 🧠 Git signs, AI commands, and cursed vibes
-- 🔌 Fully modular Lua config
+## Install on Windows
 
-## 🎵 Music Commands
+1. Install [Neovim](https://neovim.io/) 0.10 or newer and Git.
+2. Close every Neovim instance.
+3. Clone this repository:
 
-| Command         | What it does                                |
-|----------------|----------------------------------------------|
-| `:PlayLofi`     | Plays lofi beats                             |
-| `:PlayNightcore`| Summons chaotic speed                      |
-| `:PlayDegenerate`| You already know. Don't use in public 😳     |
-| `:PauseMusic`   | Pause current track                          |
-| `:PlayMusic`    | Resume playback                              |
-| `:StopMusic`    | Stop and purge the vibes                     |
-
-Make sure you have the tracks in:
-```
-~/.config/nvim/assets/
-├── lofi.mp3
-├── nightcore.mp3
-└── yamete-kudasai.mp3
+```powershell
+git clone git@github.com:JafarShamzsi/nvim.git "$HOME\nvim-backup"
 ```
 
-🐾 Pets
-Just type:
+4. Back up any existing configuration, then copy this one into place:
 
-```
-:Doggo
-:Catto
-:Bunbun
-:Frogchamp
-:RMPets  -- to remove them
+```powershell
+if (Test-Path "$HOME\.config\nvim") { Move-Item "$HOME\.config\nvim" "$HOME\.config\nvim.backup-$(Get-Date -Format yyyyMMdd-HHmmss)" }
+Copy-Item "$HOME\nvim-backup\nvim" "$HOME\.config\nvim" -Recurse
 ```
 
-⚠️ Requirements
-mpv (install via brew install mpv)
+5. Start Neovim and allow Lazy.nvim to install plugins:
 
-Neovim 0.10+
-
-curl, plenary.nvim, treesitter
-
-A valid Claude API key in your ~/.zshrc or bashrc if you're using bash:
-
-export ANTHROPIC_API_KEY="sk-ant-🔥-insert"
-🚀 Quickstart:
-
-```
-git clone https://github.com/NathanVRyver/nvim-new.git ~/.config/nvim
-cd ~/.config/nvim
+```powershell
 nvim
 ```
-Then vibe. That’s it.
 
-🍷 License
-Unlicensed. Do whatever you want with it.
+## Included
+
+- Official Doom Nvim dashboard banner and Doom One palette
+- Telescope, Neo-tree, Treesitter, LSP/Mason, completion, Git signs
+- Bufferline, sessions, formatting, integrated terminal, and Which-Key
+
+## Key bindings
+
+- `Space f f`: find files
+- `Space f r`: recent files
+- `Space f g`: search text
+- `Space e`: file explorer
+- `Space b b`: buffers
+- `Space t t`: terminal
+- `gd`, `gr`, `K`: LSP navigation
+
+## Updating
+
+```powershell
+cd "$HOME\nvim-backup"
+git pull
+Copy-Item .\nvim "$HOME\.config\nvim" -Recurse -Force
+```
